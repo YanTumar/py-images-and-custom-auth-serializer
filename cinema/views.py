@@ -194,13 +194,14 @@ class OrderViewSet(
     mixins.CreateModelMixin,
     GenericViewSet,
 ):
+    queryset = Order.objects.all()
     serializer_class = OrderSerializer
     pagination_class = OrderPagination
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
-        return Order.objects.filter(user=self.request.user).prefetch_related(
+        return self.queryset.filter(user=self.request.user).prefetch_related(
             "tickets__movie_session__movie",
             "tickets__movie_session__cinema_hall",
         )
